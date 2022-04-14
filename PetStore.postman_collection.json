@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "39bd5093-0ac9-40e6-ab7f-087c1d78a33c",
+		"name": "PetStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/pet/findByStatus?status={{statusValue}}",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"statusValue\",\"available\")"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resp = pm.response.json();\r",
+							"\r",
+							"respStatusArray = [];\r",
+							"respIDArray = [];\r",
+							"\r",
+							"for (var i=0; i<resp.length; i++){\r",
+							"    respStatusArray.push(`${resp[i].status}`);\r",
+							"    respIDArray.push(`${resp[i].id}`);\r",
+							"}\r",
+							"\r",
+							"pm.collectionVariables.set(\"statusArray\",respStatusArray)\r",
+							"pm.collectionVariables.set(\"idArray\",respIDArray)\r",
+							"\r",
+							"var expected = pm.collectionVariables.get(\"statusValue\");\r",
+							"//var expected = \"aaa\";\r",
+							"console.log(\"Status expected: \" + expected)\r",
+							"\r",
+							"pm.test('The `status Array` all contains value: '+expected, () => {\r",
+							"    _.each(respStatusArray, (item) => {\r",
+							"        pm.expect(item).to.include(expected)\r",
+							"    })\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/pet/findByStatus?status={{statusValue}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "{{statusValue}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/pet/{{petId}}",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var idArray = pm.collectionVariables.get(\"idArray\");\r",
+							"var lastElement = idArray.length -1;\r",
+							"\r",
+							"var petId = idArray[lastElement]\r",
+							"console.log(\"PetId for test: \" +petId);\r",
+							"\r",
+							"pm.collectionVariables.set(\"petId\",petId)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/pet/{{petId}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"pet",
+						"{{petId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "statusValue",
+			"value": ""
+		},
+		{
+			"key": "statusArray",
+			"value": ""
+		},
+		{
+			"key": "idArray",
+			"value": ""
+		},
+		{
+			"key": "petId",
+			"value": ""
+		}
+	]
+}
